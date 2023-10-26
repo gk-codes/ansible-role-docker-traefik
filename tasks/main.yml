@@ -1,2 +1,32 @@
 ---
 # tasks file for docker-traefik
+- name: Create basepath.
+  file:
+    path: "{{ traefik_basepath }}"
+    state: directory
+    owner: docker
+    group: docker
+    mode: '0700'
+
+- name: Create directories for bind volumes.
+  file:
+    path: "{{ traefik_basepath }}/{{ item.name }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: '0700'
+  loop:
+    - { owner: docker, group: docker, name: "config" }
+    - { owner: docker, group: docker, name: "config/certs" }
+    - { owner: docker, group: docker, name: "logs" }
+
+- name: Send templates.
+  ansible.builtin.template:
+    src: "{{ item.template_name }}"
+    dest: "{{ traefik_basepath }}/{{ item.filename }}"
+    owner: docker
+    group: docker
+    mode: '0700'
+  loop: 
+    - { template_name: env.j2, filename: .env }
+    - { template_name: compose.yml.j2, filename: docker-compose.yml }
