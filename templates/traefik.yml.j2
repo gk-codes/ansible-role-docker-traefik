@@ -8,7 +8,7 @@ log:
   format: {{ traefik_log_format }}
   filePath: {{ traefik_log_file_path }}
 {% endif %}
-{% traefik_access_log_enable %}
+{% if traefik_access_log_enable %}
 accesslog:
   format: {{ traefik_access_log_format }}
   filePath: {{ traefik_access_log_file_path }}
