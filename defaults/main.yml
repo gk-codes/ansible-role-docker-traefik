@@ -31,8 +31,8 @@ traefik_tls_certresolver:
     http_challenge: no
     http_challenge_entry_point: web
     dns_challenge: yes
-    dns_challenge_use_custom_resolvers: no
     dns_challenge_provider: your_resolver
+    dns_challenge_use_custom_resolvers: no
     dns_challenge_resolvers:
       - "1.1.1.1:53"
       - "8.8.8.8:53"
