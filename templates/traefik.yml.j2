@@ -43,7 +43,7 @@ certificatesResolvers:
 {% endif %}
 {% if traefik_tls_certresolver.staging.dns_challenge %}
       dnsChallenge:
-        provider: {{ traefik_tls_certresolver.staging.dns_challenge.provider }}
+        provider: {{ traefik_tls_certresolver.staging.dns_challenge_provider }}
 {% if traefik_tls_certresolver.staging.dns_challenge_use_custom_resolvers %}
         resolvers: {{ traefik_tls_certresolver.staging.dns_challenge_resolvers }}
 {% endif %}
