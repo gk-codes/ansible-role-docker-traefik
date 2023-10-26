@@ -7,10 +7,8 @@ traefik_container_name: traefik
 
 # create and join these networks
 traefik_proxy_networks:
-  - proxy_nextcloud
-  - proxy_privatebin
-
-traefik_domain: example.com
+  - proxy_network_1
+  - proxy_network_1
 
 # Enable Traefik Dashboard on port 8080
 traefik_enable_api: no
