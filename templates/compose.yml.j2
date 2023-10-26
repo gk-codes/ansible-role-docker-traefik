@@ -1,0 +1,31 @@
+---
+networks:
+  internet:
+    external: true
+{% for network in traefik_proxy_networks %}
+    {{ network }}:
+    external: true
+{% endfor %}
+
+services:
+  traefik:
+    image: traefik:v{{ traefik_version }}
+    container_name: {{ traefik_container_name }}
+    ports:
+      - 80:80
+      - 443:443
+{% if traefik_enable_api %}
+      - 8080:8080
+{% endif %}
+    volumes:
+      - ./config:/etc/traefik
+      - ./logs:/var/log/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    networks:
+      - internet
+{% for network in traefik_proxy_networks %}
+      - {{ network }}
+{% endfor %}
+    restart: unless-stopped

@@ -1,0 +1,89 @@
+bal:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+{% if traefik_log_enable %}
+log:
+  level: {{ traefik_log_level }}
+  format: {{ traefik_log_format }}
+  filePath: {{ traefik_log_file_path }}
+{% endif %}
+{% traefik_access_log_enable %}
+accesslog:
+  format: {{ traefik_access_log_format }}
+  filePath: {{ traefik_access_log_file_path }}
+{% endif %}
+
+api:
+  dashboard: {{ traefik_enable_api }}
+  insecure: {{ traefik_enable_api_insecure }}
+
+# -- Change EntryPoints here...
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: :443
+
+# -- Configure your CertificateResolver here...
+certificatesResolvers:
+  staging:
+    acme:
+      email: {{ traefik_tls_certresolver.staging.acme_email }}
+      storage: /etc/traefik/certs/acme.json
+      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+{% if traefik_tls_certresolver.staging.http_challenge %}
+      httpChallenge:
+        entryPoint: {{ traefik_tls_certresolver.staging.http_challenge_entry_point }}
+{% endif %}
+{% if traefik_tls_certresolver.staging.dns_challenge %}
+      dnsChallenge:
+        provider: {{ traefik_tls_certresolver.staging.dns_challenge.provider }}
+{% if traefik_tls_certresolver.staging.dns_challenge_use_custom_resolvers %}
+        resolvers: {{ traefik_tls_certresolver.staging.dns_challenge_resolvers }}
+{% endif %}
+{% endif %}
+  production:
+    acme:
+      email: {{ traefik_tls_certresolver.production.acme_email }}
+      storage: /etc/traefik/certs/acme.json
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+{% if traefik_tls_certresolver.production.http_challenge %}
+      httpChallenge:
+        entryPoint: {{ traefik_tls_certresolver.production.http_challenge_entry_point }}
+{% endif %}
+      dnsChallenge:
+        provider: {{ traefik_tls_certresolver.production.dns_challenge_provider }}
+{% if traefik_tls_certresolver.production.dns_challenge_use_custom_resolvers %}
+        resolvers: {{ traefik_tls_certresolver.production.dns_challenge_resolvers }}
+{% endif %}
+
+
+# -- (Optional) Disable TLS Cert verification check
+serversTransport:
+  insecureSkipVerify: {{ traefik_disable_tls_cert_verification }}
+
+# -- (Optional) Overwrite Default Certificates
+# tls:
+#   stores:
+#     default:
+#       defaultCertificate:
+#         certFile: /etc/traefik/certs/cert.pem
+#         keyFile: /etc/traefik/certs/cert-key.pem
+# -- (Optional) Disable TLS version 1.0 and 1.1
+#   options:
+#     default:
+#       minVersion: VersionTLS12
+
+providers:
+  docker:
+    # -- (Optional) Enable this, if you want to expose all containers automatically
+    exposedByDefault: {{ traefik_providers.docker.expose_by_default }}
+  file:
+    directory: {{ traefik_providers.file.directory }}
+    watch: {{ traefik_providers.file.watch }}

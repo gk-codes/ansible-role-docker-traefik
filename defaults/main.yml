@@ -1,2 +1,61 @@
 ---
 # defaults file for docker-traefik
+
+traefik_basepath: /srv/docker/traefik
+traefik_version: 2.10
+traefik_container_name: traefik
+
+# create and join these networks
+traefik_proxy_networks:
+  - proxy_nextcloud
+  - proxy_privatebin
+
+traefik_domain: example.com
+
+# Enable Traefik Dashboard on port 8080
+traefik_enable_api: no
+traefik_enable_api_insecure: no
+
+# Change Log Level and Format
+traefik_log_enable: yes
+traefik_log_level: ERROR      # [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+traefik_log_format: common    # [common, json, logfmt]
+traefik_log_file_path: /var/log/traefik/traefik.log
+
+# Enable Accesslog and change Format
+traefik_access_log_enable: yes      # yes or no
+traefik_access_log_format: common   # [common, json, logfmt]
+traefik_access_log_file_path: /var/log/traefik/access.log
+
+traefik_tls_certresolver:
+  staging:
+    acme_email: your_email@example.com
+    http_challenge: no
+    http_challenge_entry_point: web
+    dns_challenge: yes
+    dns_challenge_use_custom_resolvers: no
+    dns_challenge_provider: your_resolver
+    dns_challenge_resolvers:
+      - "1.1.1.1:53"
+      - "8.8.8.8:53"
+  production:
+    acme_email: your_email@example.com
+    http_challenge: no
+    http_challenge_entry_point: web
+    dns_challenge: yes
+    dns_challenge_provider: your_resolver
+    dns_challenge_use_custom_resolvers: no
+    dns_challenge_resolvers:
+      - "1.1.1.1:53"
+      - "8.8.8.8:53"
+
+traefik_disable_tls_cert_verification: true
+
+traefik_providers:
+  docker:
+    expose_by_default: false
+  file:
+    directory: /etc/traefik
+    watch: true
+
+traefik_cf_dns_api_token: your_secure_token
