@@ -3,7 +3,7 @@ networks:
   internet:
     external: true
 {% for network in traefik_proxy_networks %}
-    {{ network }}:
+  {{ network }}:
     external: true
 {% endfor %}
 
