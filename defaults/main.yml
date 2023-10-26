@@ -2,7 +2,7 @@
 # defaults file for docker-traefik
 
 traefik_basepath: /srv/docker/traefik
-traefik_version: 2.10
+traefik_version: 2.10.4
 traefik_container_name: traefik
 
 # create and join these networks
