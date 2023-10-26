@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 bal:
   checkNewVersion: false
   sendAnonymousUsage: false
@@ -9,6 +10,7 @@ log:
   filePath: {{ traefik_log_file_path }}
 {% endif %}
 {% if traefik_access_log_enable %}
+
 accesslog:
   format: {{ traefik_access_log_format }}
   filePath: {{ traefik_access_log_file_path }}
@@ -18,7 +20,6 @@ api:
   dashboard: {{ traefik_enable_api }}
   insecure: {{ traefik_enable_api_insecure }}
 
-# -- Change EntryPoints here...
 entryPoints:
   web:
     address: :80
@@ -30,7 +31,6 @@ entryPoints:
   websecure:
     address: :443
 
-# -- Configure your CertificateResolver here...
 certificatesResolvers:
   staging:
     acme:
@@ -64,7 +64,6 @@ certificatesResolvers:
 {% endif %}
 
 
-# -- (Optional) Disable TLS Cert verification check
 serversTransport:
   insecureSkipVerify: {{ traefik_disable_tls_cert_verification }}
 
@@ -82,7 +81,6 @@ serversTransport:
 
 providers:
   docker:
-    # -- (Optional) Enable this, if you want to expose all containers automatically
     exposedByDefault: {{ traefik_providers.docker.expose_by_default }}
   file:
     directory: {{ traefik_providers.file.directory }}
