@@ -4,9 +4,10 @@
   file:
     path: "{{ traefik_basepath }}"
     state: directory
-    owner: docker
-    group: docker
-    mode: '0700'
+    owner: "{{ traefik_basepath_owner }}"
+    group: "{{ traefik_basepath_group }}"
+    mode:  "{{ traefik_basepath_mode }}"
+  when: traefik_create_directories
 
 - name: Create directories for bind volumes.
   file:
@@ -14,20 +15,15 @@
     state: directory
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
-    mode: '0700'
-  loop:
-    - { owner: docker, group: docker, name: "config" }
-    - { owner: docker, group: docker, name: "config/certs" }
-    - { owner: docker, group: docker, name: "logs" }
+    mode: "{{ item.mode }}"
+  loop: "{{ traefik_directories }}"
+  when: traefik_create_directories
 
 - name: Send templates.
   ansible.builtin.template:
-    src: "{{ item.template_name }}"
-    dest: "{{ traefik_basepath }}/{{ item.filename }}"
-    owner: docker
-    group: docker
-    mode: '0700'
-  loop: 
-    - { template_name: env.j2, filename: .env }
-    - { template_name: compose.yml.j2, filename: docker-compose.yml }
-    - { template_name: traefik.yml.j2, filename: "config/traefik.yml"}
+    src: "{{ item.src_name }}"
+    dest: "{{ traefik_basepath }}/{{ item.dest_name }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ traefik_templates }}"
