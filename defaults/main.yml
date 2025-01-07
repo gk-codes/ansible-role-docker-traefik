@@ -1,7 +1,7 @@
 ---
 # defaults file for docker-traefik
 
-traefik_version: 2.10.5
+traefik_version: 3
 traefik_container_name: traefik
 
 traefik_create_directories: yes

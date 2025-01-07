@@ -1,4 +1,7 @@
 # {{ ansible_managed }}
+core:
+  defaultRuleSyntax: v2
+
 global:
   checkNewVersion: false
   sendAnonymousUsage: false
@@ -30,6 +33,12 @@ entryPoints:
           scheme: https
   websecure:
     address: :443
+    transport:
+      respondingTimeouts:
+        readTimeout: 0s
+#        idleTimeout: 600s
+#        writeTimeout: 600s
+
 
 certificatesResolvers:
   staging:
